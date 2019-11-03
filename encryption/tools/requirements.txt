@@ -1,0 +1,46 @@
+cryptography
+base58
+
+
+
+Encrypted Queries
+Certain contexts, such as smart contracts on public blockchains, might require a level of privacy to protect data from public scrutiny. Developers can make encrypted Provable queries by encrypting a part (or all) of a query with the Provable public key. The encrypted queries feature may be of interested to developers who want to deploy their blockchain applications of public networks. For example, if an application leverages data from an authenticated API, it would be dangerous to disclose the API key to anyway who is monitoring the public chain.
+
+Provable therefore offers the possibility of encrypting the parameters contained in a query to Provable's public key: 044992e9473b7d90ca54d2886c7addd14a61109af202f1c95e218b0c99eb060c7134c4ae46345d0383ac996185762f04997d6fd6c393c86e4325c469741e64eca9 Only Provable will then be able to decrypt the request using its paired private key.
+
+To encrypt the query, Provable provides a CLI tool, which can be found here. Alternatively, The CLI command to encrypt an arbitrary string of text is then:
+
+python encrypted_queries_tools.py -e -p 044992e9473b7d90ca54d2886c7addd14a61109af202f1c95e218b0c99eb060c7134c4ae46345d0383ac996185762f04997d6fd6c393c86e4325c469741e64eca9 "YOUR QUERY"
+
+This will encrypt the query with the default Provable public key. The encrypted string can then be used as an argument for an Provable query.
+
+// In this example, the entire first argument of an provable_query has been encrypted.
+// The actual string encrypted is:  json(https://poloniex.com/public?command=returnTicker).BTC_ETH.last
+provable_query("URL","AzK149Vj4z65WphbBPiuWQ2PStTINeVp5sS9PSwqZi8NsjQy6jJLH765qQu3U/
+  bZPNeEB/bYZJYBivwmmREXTGjmKJk/62ikcO6mIMQfB5jBVVUOqzzZ/A8ecWR2nOLv0CKkkkFzBYp2sW1H
+  31GI+SQzWV9q64WdqZsAa4gXqHb6jmLkVFjOGI0JvrA/Zh6T5lyeLPSmaslI");
+ You could also encrypt only 1 parameter of provable_query(), leaving the other ones in cleartext.
+The encryption method is also available for POST requests: you can encrypt both the URL and the POST data field as in the following example:
+
+// This is the query that we want to encrypt
+provable_query("URL","json(https://api.postcodes.io/postcodes).status",
+  '{"postcodes" : ["OX49 5NU", "M32 0JG", "NE30 1DP"]}')
+Encrypt the datasource (URL in this case):
+python encrypted_queries_tools.py -e -p 044992e94... "URL"
+
+Returns:
+BEIGVzv6fJcFiYQNZF8ArHnvNMAsAWBz8Zwl0YCsy4K/RJTN8ERHfBWtSfYHt+uegdD1wtXTkP30sTW+3xR3w/un1i3caSO0Rfa+wmIMmNHt4aOS
+
+
+Encrypt the argument(in this case we are using the JSON parsing helper to retrieve the "status" ):
+python encrypted_queries_tools.py -e -p 044992e94... "json(https://api.postcodes.io/postcodes).status"
+
+Returns:
+BNKdFtmfmazLLR/bfey4mP8v/R5zCIUK7obcUrF2d6CWUMvKKUorQqYZNu1YfRZsGlp/F96CAQhSGomJC7oJa3PktwoW5J1Oti/y2v4+b5+vN8yLIj1trS7p1l341Jf66AjaxnoFPplwLqE=
+
+
+Encrypt the JSON (third argument, the data to POST):
+python encrypted_queries_tools.py -e -p 044992e94... '{"postcodes" : ["OX49 5NU", "M32 0JG", "NE30 1DP"]}'
+
+Returns:
+BF5u1td9ugoacDabyfVzoTxPBxGNtmXuGV7AFcO1GLmXkXIKlBcAcelvaTKIbmaA6lXwZCJCSeWDHJOirHiEl1LtR8lCt+1ISttWuvpJ6sPx3Y/QxTajYzxZfQb6nCGkv+8cczX0PrqKKwOn/Elf9kpQQCXeMglunT09H2B4HfRs7uuI

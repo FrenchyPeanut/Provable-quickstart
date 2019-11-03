@@ -26,7 +26,6 @@ contract OracleTest is usingProvable  {
     }
 
     function __callback(bytes32 myid, string result) public {
-        // if (msg.sender != provable_cbAddress()){} revert();
         require(msg.sender == provable_cbAddress(), "caller should be the one making the Provable request");
         ethPrice = result;
         emit LogPriceUpdated(result);
@@ -40,5 +39,7 @@ contract OracleTest is usingProvable  {
             provable_query("URL", "json(https://api.pro.coinbase.com/products/ETH-USD/ticker).price");
         }
     }
+    
+    
 
 }
